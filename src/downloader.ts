@@ -43,7 +43,6 @@ async function fetchImages(imageURLs: string[]) {
           throw new Error()
         }
         const blob = await res.blob()
-        console.log(blob)
         imageMap.set(url, blob)
       } catch (e) {
         imageMap.set(url, null)
