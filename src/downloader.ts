@@ -1,3 +1,5 @@
+import JSZip from 'jszip'
+
 const MDImagePattern = /\!\[([^\]]*)\]\(([^)]*)\)/g
 
 /**
@@ -78,11 +80,28 @@ async function makeZip(document: string, images: Map<string, Blob|null>) {
   })
 
   // make zip file
-  console.log(document, filenameMap)
+  const zip = new JSZip()
+  zip.file('document.md', document)
+  for (let [url, blob] of images.entries()) {
+    const filename = filenameMap.get(url)
+    if (filename === undefined) {
+      continue
+    }
+    zip.file(filename, blob)
+  }
+  return zip
 }
 
-function downloadZip(zip: void) {
-  throw new Error("Function not implemented.");
+async function downloadZip(zip: JSZip) {
+  const zipFilename = location.pathname + '.zip'
+  const blob = await zip.generateAsync({ type: 'blob' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = zipFilename
+  document.body.appendChild(link)
+  link.click()
+  URL.revokeObjectURL(url)
 }
 
 async function main() {
@@ -90,10 +109,7 @@ async function main() {
   const imageURLs = getDocumentImages(document)
   const images = await fetchImages(imageURLs)
   const zip = await makeZip(document, images)
-  downloadZip(zip)
+  await downloadZip(zip)
 }
 
 main()
-
-// To supress isolatedModules error
-export {}
