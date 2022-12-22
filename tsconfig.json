@@ -13,8 +13,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"]
+    "skipLibCheck": true
   },
   "include": ["src"]
 }
