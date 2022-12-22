@@ -1,13 +1,16 @@
 import browser from 'webextension-polyfill'
 import downloadDocument from './downloader?script';
 
-browser.contextMenus.create(
-  {
-    id: "download-zip",
-    title: "Zip CodiMD",
-    contexts: ["all"],
-  }
-);
+browser.runtime.onInstalled.addListener(() => {
+  browser.contextMenus.create(
+    {
+      id: "download-zip",
+      title: "Zip CodiMD",
+      contexts: ["all"],
+    }
+  );
+})
+
 browser.contextMenus.onClicked.addListener((_, tab) => {
   if (tab?.id === undefined) {
     return
